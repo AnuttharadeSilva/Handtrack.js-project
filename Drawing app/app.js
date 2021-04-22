@@ -3,7 +3,7 @@ const modelParams = {
     imageScaleFactor: 0.7,
     maxNumBoxes: 20,
     iouThreshold: 0.5,
-    scoreThreshold: 0.79
+    scoreThreshold: 0.85
 }
 
 // access webcam
@@ -17,6 +17,8 @@ const video = document.querySelector('#video');
 const audio = document.querySelector('#audio');
 const canvas = document.querySelector('#canvas');
 const context = canvas.getContext('2d');
+const drawingCanvas = document.querySelector('#drawingCanvas');
+const ctx = drawingCanvas.getContext('2d');
 let model;
 
 handTrack.startVideo(video).then(status =>{
@@ -25,12 +27,15 @@ handTrack.startVideo(video).then(status =>{
             { video: {} },
             stream => {
                 video.srcObject = stream;
-                setInterval(runDetection,1000);
+                runDetection();
             },
             err => console.log(err)
         );
     }
 });
+
+let old_x = 0;
+let old_y = 0;
 
 function runDetection(){
     model.detect(video)
@@ -38,8 +43,20 @@ function runDetection(){
         console.log(predictions);
         model.renderPredictions(predictions, canvas, context, video);
         if(predictions.length > 0){
-            audio.play();
+            var new_x =predictions[0]['bbox'][0];
+            var new_y =predictions[0]['bbox'][1];
+            ctx.beginPath(); // begin
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#c0392b';
+            ctx.moveTo(old_x, old_y); // from
+            ctx.lineTo(new_x, new_y); // to
+            old_x = new_x;
+            old_y = new_y;
+            ctx.stroke(); // draw it!
         }
+        requestAnimationFrame(runDetection);
+        
     });
 }
 
