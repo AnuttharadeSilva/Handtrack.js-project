@@ -1,9 +1,3 @@
-// access webcam
-navigator.getUserMedia = navigator.getUserMedia ||
-                        navigator.webkitGetUserMedia || 
-                        navigator.mozGetUserMedia ||
-                        navigator.msGetUserMedia;
-
 const modelParams = {
     flipHorizontal: true,
     imageScaleFactor: 0.7,
@@ -11,6 +5,12 @@ const modelParams = {
     iouThreshold: 0.5,
     scoreThreshold: 0.79
 }
+
+// access webcam
+navigator.getUserMedia = navigator.getUserMedia ||
+                        navigator.webkitGetUserMedia || 
+                        navigator.mozGetUserMedia ||
+                        navigator.msGetUserMedia;
 
 //select from html
 const video = document.querySelector('#video');
